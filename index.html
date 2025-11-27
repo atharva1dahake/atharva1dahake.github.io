@@ -72,7 +72,6 @@
     }
 
     .btn-file { margin-top: 18px; display:inline-block; }
-
     .btn-file:hover, button:hover { background: #047857; transform: translateY(-2px); }
 
     button.ghost { background:#e5e7eb; color:#111827; }
@@ -113,6 +112,9 @@
     footer { margin-top:40px; font-size:0.9em; color: var(--gray); text-align:center; }
 
     @keyframes fadeIn { from {opacity:0; transform: translateY(15px);} to {opacity:1; transform: translateY(0);} }
+
+    /* View PDF button styling */
+    #viewPdfBtn { margin-top:20px; }
   </style>
 </head>
 
@@ -160,6 +162,12 @@
         <p>No result yet.</p>
       </div>
     </div>
+
+    <!-- VIEW PDF BUTTON -->
+    <div style="text-align:center;">
+      <button id="viewPdfBtn">View PDF</button>
+    </div>
+
   </main>
 
   <footer>
@@ -175,6 +183,7 @@
     const canvas = document.getElementById("previewCanvas");
     const ctx = canvas.getContext("2d");
     const dropzone = document.getElementById("dropzone");
+    const viewPdfBtn = document.getElementById("viewPdfBtn");
 
     let imgLoaded = false;
 
@@ -195,9 +204,12 @@
       reader.onload = e => {
         const img = new Image();
         img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
+          // Scale canvas for mobile
+          const maxWidth = 500;
+          const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           canvas.style.display = "block";
           imgLoaded = true;
           predictBtn.disabled = false;
@@ -207,29 +219,11 @@
       reader.readAsDataURL(file);
     }
 
-    dropzone.addEventListener("click", () => {
-      // Mobile & desktop: clicking dropzone opens file picker
-      fileInput.click();
-    });
-
-    dropzone.addEventListener("dragover", e => {
-      e.preventDefault();
-      dropzone.style.background = "#ccfbf1";
-    });
-
-    dropzone.addEventListener("dragleave", () => {
-      dropzone.style.background = "var(--light)";
-    });
-
-    dropzone.addEventListener("drop", e => {
-      e.preventDefault();
-      dropzone.style.background = "var(--light)";
-      handleFile(e.dataTransfer.files[0]);
-    });
-
-    fileInput.addEventListener("change", function() {
-      handleFile(this.files[0]);
-    });
+    dropzone.addEventListener("click", () => { fileInput.click(); });
+    dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.style.background = "#ccfbf1"; });
+    dropzone.addEventListener("dragleave", () => { dropzone.style.background = "var(--light)"; });
+    dropzone.addEventListener("drop", e => { e.preventDefault(); dropzone.style.background = "var(--light)"; handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener("change", function() { handleFile(this.files[0]); });
 
     predictBtn.addEventListener("click", () => {
       if (!imgLoaded) return;
@@ -246,6 +240,12 @@
       fileInput.value = "";
       imgLoaded = false;
       predictBtn.disabled = true;
+    });
+
+    // VIEW PDF BUTTON
+    viewPdfBtn.addEventListener("click", () => {
+      // Replace with your PDF path or URL
+      window.open("AI-for-Crop-Disease-Detection[1].pdf", "_blank");
     });
   </script>
 </body>
