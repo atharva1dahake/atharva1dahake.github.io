@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Crop Disease Detection</title>
-
   <style>
     :root {
       --primary: #059669;
@@ -32,19 +31,11 @@
       text-align: center;
       padding: 1.8rem 1rem;
       width: 100%;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    header p {
-      margin-top: 8px;
-      color: #d1fae5;
-      font-size: 0.95rem;
-    }
+    header h1 { margin: 0; font-size: 2rem; }
+    header p { margin-top:8px; color:#d1fae5; font-size:0.95rem; }
 
     main {
       width: 95%;
@@ -52,7 +43,7 @@
       margin-top: 30px;
       background: var(--card-bg);
       border-radius: 18px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       padding: 30px 25px;
       animation: fadeIn 0.6s ease;
     }
@@ -67,13 +58,9 @@
       transition: 0.3s;
     }
 
-    .upload-area:hover {
-      background: #d1fae5;
-      transform: translateY(-2px);
-    }
+    .upload-area:hover { background:#d1fae5; transform: translateY(-2px); }
 
-    .btn-file,
-    button {
+    .btn-file, button {
       background: var(--primary);
       color: white;
       border: none;
@@ -84,39 +71,21 @@
       transition: 0.3s;
     }
 
-    .btn-file {
-      margin-top: 18px;
-      display: inline-block;
-    }
+    .btn-file { margin-top: 18px; display:inline-block; }
 
-    .btn-file:hover,
-    button:hover {
-      background: #047857;
-      transform: translateY(-2px);
-    }
+    .btn-file:hover, button:hover { background: #047857; transform: translateY(-2px); }
 
-    button.ghost {
-      background: #e5e7eb;
-      color: #111827;
-    }
+    button.ghost { background:#e5e7eb; color:#111827; }
+    button.ghost:hover { background:#d1d5db; }
 
-    button.ghost:hover {
-      background: #d1d5db;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 20px;
-    }
+    .controls { display:flex; justify-content:center; gap:12px; margin-top:20px; }
 
     canvas {
       margin-top: 25px;
       border-radius: 12px;
       max-width: 100%;
       display: none;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     .result-box {
@@ -131,81 +100,51 @@
     .info-card {
       background: white;
       border-radius: 14px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       padding: 20px;
       margin-top: 30px;
     }
 
-    .info-card h3 {
-      color: var(--dark);
-      margin-bottom: 10px;
-    }
+    .info-card h3 { color: var(--dark); margin-bottom:10px; }
+    .info-card ul { padding-left:20px; margin-top:8px; }
+    .info-card li { margin-bottom:8px; }
+    .small { font-size:0.9em; color:var(--gray); }
 
-    .info-card ul {
-      padding-left: 20px;
-      margin-top: 8px;
-    }
+    footer { margin-top:40px; font-size:0.9em; color: var(--gray); text-align:center; }
 
-    .info-card li {
-      margin-bottom: 8px;
-    }
-
-    .small {
-      font-size: 0.9em;
-      color: var(--gray);
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: var(--gray);
-      text-align: center;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(15px);} to {opacity:1; transform: translateY(0);} }
   </style>
 </head>
 
 <body>
-
   <header>
     <h1>🌿 AI Crop Disease Detection</h1>
     <p>Upload a clear leaf photo to analyze crop health</p>
   </header>
 
   <main>
-
-    <!-- Upload area -->
-    <div class="upload-area" id="dropzone" tabindex="0">
-      <input id="fileInput" type="file" accept="image/*" style="display:none;">
-
+    <div class="upload-area" id="dropzone">
       <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
         <path d="M12 15V3"/>
       </svg>
-
-      <p style="margin:10px 0 0;font-weight:600;color:var(--dark)">Drag & drop an image, or</p>
+      <p>Drag & drop an image, or</p>
       <label class="btn-file" for="fileInput">Choose a file</label>
-      <p class="small" style="margin-top:8px">JPG/PNG - Clear leaf closeups work best</p>
+      <p class="small">JPG/PNG - Clear leaf closeups work best</p>
     </div>
 
-    <!-- Canvas Preview -->
+    <input type="file" id="fileInput" accept="image/*" style="display:none;">
+
     <canvas id="previewCanvas"></canvas>
 
-    <!-- Buttons -->
     <div class="controls">
       <button id="predictBtn" disabled>Analyze</button>
       <button id="resetBtn" class="ghost">Reset</button>
     </div>
 
-    <!-- Results -->
     <div id="results"></div>
 
-    <!-- Info -->
     <div class="info-card">
       <h3>📋 Info & Tips</h3>
       <ul class="small">
@@ -221,7 +160,6 @@
         <p>No result yet.</p>
       </div>
     </div>
-
   </main>
 
   <footer>
@@ -240,7 +178,6 @@
 
     let imgLoaded = false;
 
-    // Disease list
     const diseases = [
       { name: "Tomato Leaf Blight", advice: "Remove affected leaves and use a safe fungicide." },
       { name: "Corn Leaf Rust", advice: "Use resistant crop varieties and improve field ventilation." },
@@ -252,10 +189,29 @@
       { name: "Sugarcane Mosaic Virus", advice: "Remove infected plants and plant certified virus-free seeds." }
     ];
 
-    // Open file chooser
-    dropzone.addEventListener("click", () => fileInput.click());
+    function handleFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          canvas.style.display = "block";
+          imgLoaded = true;
+          predictBtn.disabled = false;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-    // Drag & drop support
+    dropzone.addEventListener("click", () => {
+      // Mobile & desktop: clicking dropzone opens file picker
+      fileInput.click();
+    });
+
     dropzone.addEventListener("dragover", e => {
       e.preventDefault();
       dropzone.style.background = "#ccfbf1";
@@ -271,47 +227,17 @@
       handleFile(e.dataTransfer.files[0]);
     });
 
-    // File input direct selection
-    fileInput.addEventListener("change", function () {
+    fileInput.addEventListener("change", function() {
       handleFile(this.files[0]);
     });
 
-    // Handle file and preview on canvas
-    function handleFile(file) {
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const img = new Image();
-        img.onload = function () {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          canvas.style.display = "block";
-          imgLoaded = true;
-          predictBtn.disabled = false;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // Predict random disease
     predictBtn.addEventListener("click", () => {
       if (!imgLoaded) return;
-
       const random = diseases[Math.floor(Math.random() * diseases.length)];
-
-      resultsDiv.innerHTML = `
-        <div class="result-box">
-          <h3>🩺 Disease Detected: <b>${random.name}</b></h3>
-        </div>
-      `;
-
+      resultsDiv.innerHTML = `<div class="result-box">🩺 Disease Detected: <b>${random.name}</b></div>`;
       adviceArea.innerHTML = `<p>${random.advice}</p>`;
     });
 
-    // Reset
     resetBtn.addEventListener("click", () => {
       canvas.style.display = "none";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -322,6 +248,5 @@
       predictBtn.disabled = true;
     });
   </script>
-
 </body>
 </html>
