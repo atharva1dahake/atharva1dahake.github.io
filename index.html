@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Crop Disease Detection</title>
+
   <style>
     :root {
       --primary: #059669;
@@ -60,7 +61,7 @@
       border: 2px dashed var(--primary);
       border-radius: 16px;
       text-align: center;
-      padding: 40px 20px 80px; /* FIXED bottom padding */
+      padding: 40px 20px 80px;
       background: var(--light);
       cursor: pointer;
       transition: 0.3s;
@@ -84,7 +85,7 @@
     }
 
     .btn-file {
-      margin-top: 18px; /* FIXED spacing */
+      margin-top: 18px;
       display: inline-block;
     }
 
@@ -162,24 +163,22 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
+
   <header>
     <h1>🌿 AI Crop Disease Detection</h1>
     <p>Upload a clear leaf photo to analyze crop health</p>
   </header>
 
   <main>
+
+    <!-- Upload area -->
     <div class="upload-area" id="dropzone" tabindex="0">
       <input id="fileInput" type="file" accept="image/*" style="display:none;">
 
@@ -194,15 +193,19 @@
       <p class="small" style="margin-top:8px">JPG/PNG - Clear leaf closeups work best</p>
     </div>
 
+    <!-- Canvas Preview -->
     <canvas id="previewCanvas"></canvas>
 
+    <!-- Buttons -->
     <div class="controls">
       <button id="predictBtn" disabled>Analyze</button>
       <button id="resetBtn" class="ghost">Reset</button>
     </div>
 
+    <!-- Results -->
     <div id="results"></div>
 
+    <!-- Info -->
     <div class="info-card">
       <h3>📋 Info & Tips</h3>
       <ul class="small">
@@ -218,6 +221,7 @@
         <p>No result yet.</p>
       </div>
     </div>
+
   </main>
 
   <footer>
@@ -232,8 +236,92 @@
     const adviceArea = document.getElementById("adviceArea");
     const canvas = document.getElementById("previewCanvas");
     const ctx = canvas.getContext("2d");
+    const dropzone = document.getElementById("dropzone");
 
+    let imgLoaded = false;
+
+    // Disease list
     const diseases = [
       { name: "Tomato Leaf Blight", advice: "Remove affected leaves and use a safe fungicide." },
-      { name: "Corn Leaf Rust", advice: "Use resistant crop varieties and improve ventilation." },
+      { name: "Corn Leaf Rust", advice: "Use resistant crop varieties and improve field ventilation." },
       { name: "Potato Early Blight", advice: "Avoid overhead watering and rotate crops yearly." },
+      { name: "Rice Brown Spot", advice: "Use nitrogen fertilizer properly and apply fungicide if needed." },
+      { name: "Healthy Leaf", advice: "Your crop looks healthy! Maintain regular monitoring." },
+      { name: "Banana Sigatoka", advice: "Trim infected leaves and improve airflow in the plantation." },
+      { name: "Grape Downy Mildew", advice: "Use copper-based fungicide and water early in the morning." },
+      { name: "Sugarcane Mosaic Virus", advice: "Remove infected plants and plant certified virus-free seeds." }
+    ];
+
+    // Open file chooser
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    // Drag & drop support
+    dropzone.addEventListener("dragover", e => {
+      e.preventDefault();
+      dropzone.style.background = "#ccfbf1";
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.style.background = "var(--light)";
+    });
+
+    dropzone.addEventListener("drop", e => {
+      e.preventDefault();
+      dropzone.style.background = "var(--light)";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    // File input direct selection
+    fileInput.addEventListener("change", function () {
+      handleFile(this.files[0]);
+    });
+
+    // Handle file and preview on canvas
+    function handleFile(file) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          canvas.style.display = "block";
+          imgLoaded = true;
+          predictBtn.disabled = false;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Predict random disease
+    predictBtn.addEventListener("click", () => {
+      if (!imgLoaded) return;
+
+      const random = diseases[Math.floor(Math.random() * diseases.length)];
+
+      resultsDiv.innerHTML = `
+        <div class="result-box">
+          <h3>🩺 Disease Detected: <b>${random.name}</b></h3>
+        </div>
+      `;
+
+      adviceArea.innerHTML = `<p>${random.advice}</p>`;
+    });
+
+    // Reset
+    resetBtn.addEventListener("click", () => {
+      canvas.style.display = "none";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      resultsDiv.innerHTML = "";
+      adviceArea.innerHTML = "<p>No result yet.</p>";
+      fileInput.value = "";
+      imgLoaded = false;
+      predictBtn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>
